@@ -1,3 +1,4 @@
+<html>
 <style>
 body {
   min-width:357px;
@@ -12,7 +13,7 @@ img {
   height:75px;
 }
 </style>
-
+<script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
 <script>
 var req = new XMLHttpRequest();
 req.open(
@@ -26,8 +27,8 @@ req.open(
         "sort=relevance&" +  // another good one is "interestingness-desc"
         "per_page=20",
     true);
-req.onload = showPhotos;
-req.send(null);
+//req.onload = showPhotos;
+//req.send(null);
 
 function showPhotos() {
   var photos = req.responseXML.getElementsByTagName("photo");
@@ -47,4 +48,40 @@ function constructImageURL(photo) {
       "_" + photo.getAttribute("secret") +
       "_s.jpg";
 }
+
+function getData(){
+	//alert("HI");
+	var x = document.getElementById("int");
+	//x.innerHTML += "<b>Loading Data...<b>";
+	var value = document.getElementById("email");
+	$.getJSON('http://localhost:18080/convertigo/projects/GmailpetProject/.jsonp?__sequence=callGmail&email=' + value.value + '&__callback=?', function(data) { 
+		var d = document.getElementById("results");
+		//x.innerHTML = "<b>The Data is...<b>";
+		$.each(data.document.mailDetails.mail, function(){
+			if(this){
+				var x = document.getElementById("int");
+				d.innerHTML += "<br/>" + this.from;
+				$.each(this.links, function(i,val){
+					d.innerHTML += "<br/> <a target='_blank' href='https://mail.google.com" + val + "'>Click Here :)</a>";
+				});
+			}
+			else{
+				alert("here");
+			}
+		})
+		x.innerHTML = "";
+	});
+}
 </script>
+
+<body>
+	
+	Enter email id to search: <input type="text" value="" name="email" id="email"/> <br/>
+ 	<input type="button" name="getData" onclick="getData()" value="Get Attachment Links!"/>
+	
+	<br/>
+	<br/>
+	<div id="int"/>
+	<div class="results" id="results"/>
+</body>
+</html>
